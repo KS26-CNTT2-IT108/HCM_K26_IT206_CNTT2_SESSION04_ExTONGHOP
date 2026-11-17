@@ -1,0 +1,55 @@
+SESSION04
+[BTTH] Bài tập thực hành tổng hợp
+
+Tên lớp: HCM K26 CNTT2
+Môn học: Kỹ năng PROMPTING với AI
+Họ và tên: LƯƠNG THANH THƯ
+
+PHẦN 1: BÁO CÁO THIẾT KẾ GIẢI PHÁP (SYSTEM DESIGN)
+Mục tiêu: Xây dựng hệ thống tự động kiểm tra và review mã nguồn qua chuỗi prompt khép kín, tiết kiệm thời gian và ngăn ngừa lỗi hệ thống.
+Kiến trúc I/O:
+Input: Đoạn code thô từ người dùng.
+Output: Báo cáo gồm trạng thái hợp lệ, quá trình lập luận logic, điểm số và mã nguồn đã được tối ưu.
+
+PHẦN 2: HỆ THỐNG XÍCH CHUỖI PROMPT 3 TẦNG (PIPELINE)
+Bước 1: Kiểm định & Xử lý đứt gãy (Error Handling)
+Markdown
+[SYSTEM ROLE] Bạn là Cổng kiểm định dữ liệu an toàn.
+[NHIỆM VỤ] Kiểm tra đoạn code đầu vào.
+[QUY TẮC XỬ LÝ LỖI]:
+- NẾU code trống hoặc chứa mã độc: DỪNG ngay chuỗi xử lý, trả về JSON: {"status": "ERROR", "message": "Dữ liệu không hợp lệ."}
+- NẾU hợp lệ: Trả về JSON: {"status": "SUCCESS", "sanitized_code": "[Code đã làm sạch]"}
+[DỮ LIỆU ĐẦU VÀO]: {USER_INPUT_CODE}
+Bước 2: Lập luận từng bước (Chain-of-Thought)
+Markdown
+[SYSTEM ROLE] Bạn là Senior Software Architect.
+[NHIỆM VỤ] Phân tích đoạn code sạch từ Bước 1 theo các bước:
+1. **Luồng thực thi:** Mô tả cách code hoạt động.
+2. **Rủi ro ngoại lệ:** Dò tìm các lỗi tiềm ẩn (như `ZeroDivisionError`, `IndexError`).
+3. **Hiệu năng:** Ước lượng độ phức tạp thuật toán (Big O).
+
+Bước 3: Tối ưu hóa & Phản hồi hành động (Actionable Output)
+Markdown
+[SYSTEM ROLE] Bạn là Lead Developer hướng dẫn viên.
+[NHIỆM VỤ] Dựa trên kết quả Bước 2:
+1. Chấm điểm (Thang 100).
+2. Viết lại mã nguồn đã Refactor an toàn tuyệt đối.
+[ĐỊNH DẠNG ĐẦU RA]: Điểm số + Nhận xét CoT + Code Refactor chuẩn Clean Code.
+PHẦN 3: KẾT QUẢ CHẠY THỬ NGHIỆM THỰC TẾ (SIMULATION)
+Input giả định (Code có lỗi tiềm ẩn):
+Python
+def tinh_trung_binh(lst):
+    return sum(lst) / len(lst)  # Lỗi ZeroDivisionError khi lst rỗng
+Kết quả thực thi qua chuỗi Prompt:
+Bước 1 (Error Handling): Xác nhận cú pháp hợp lệ, chuyển tiếp sanitized_code.
+Bước 2 (Chain-of-Thought): Phát hiện nguy cơ sập chương trình nếu truyền danh sách rỗng (lst = []).
+Bước 3 (Actionable Output):
+Điểm: 70/100 (Trừ vì thiếu xử lý ngoại lệ).
+
+Mã nguồn Refactor chuẩn hóa:
+Python
+def tinh_trung_binh(lst):
+    """Tính trung bình cộng an toàn, chống lỗi ZeroDivisionError."""
+    if not lst:
+        return 0.0
+    return sum(lst) / len(lst)
